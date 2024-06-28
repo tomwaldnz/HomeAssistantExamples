@@ -1,0 +1,12 @@
+alias: Notification System Log All
+description: "When a system log entry is made send it out by email"
+trigger:
+  - platform: event
+    event_type: system_log_event
+condition: []
+action:
+  - service: notify.email_service_name
+    data:
+      title: HA log entry made
+      message: "{{ trigger.event.data.message[0] }}"
+mode: single

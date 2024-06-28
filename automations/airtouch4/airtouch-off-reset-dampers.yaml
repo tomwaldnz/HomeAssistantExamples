@@ -1,0 +1,137 @@
+alias: AT Off Reset to ITC daytime
+description: >-
+  Reset dampers to a known set position when the system is  turned off during the day.
+  Don't do this at night as a restart, power cut or exception in the log can prevent
+  the state being restored if power comes back on.
+trigger:
+  - platform: state
+    entity_id:
+      - climate.ac_daikin
+    to: "off"
+condition:
+  - condition: time
+    after: "07:00:00"
+    before: "22:00:00"
+action:
+  - service: climate.set_preset_mode
+    data:
+      preset_mode: Damper
+    target:
+      entity_id:
+        - climate.itc_guest
+        - climate.itc_small_bedroom
+        - climate.itc_master
+        - climate.itc_living
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - service: fan.set_percentage
+    data:
+      percentage: 0
+    target:
+      entity_id:
+        - fan.damper_master
+        - fan.damper_guest
+        - fan.damper_small_bedroom
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - service: fan.set_percentage
+    data:
+      percentage: 100
+    target:
+      entity_id:
+        - fan.damper_living
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - service: climate.set_preset_mode
+    data:
+      preset_mode: ITC
+    target:
+      entity_id:
+        - climate.itc_guest
+        - climate.itc_living
+        - climate.itc_master
+        - climate.itc_small_bedroom
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - service: fan.turn_off
+    target:
+      entity_id:
+        - fan.damper_guest
+        - fan.damper_master
+        - fan.damper_small_bedroom
+    data: {}
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - service: fan.turn_on
+    target:
+      entity_id:
+        - fan.damper_living
+    data: {}
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - service: climate.set_temperature
+    data:
+      temperature: 21
+    target:
+      entity_id: climate.itc_living
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - service: climate.set_temperature
+    data:
+      temperature: 20
+    target:
+      entity_id:
+        - climate.itc_small_bedroom
+        - climate.itc_guest
+        - climate.itc_master
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - service: climate.set_fan_mode
+    data:
+      fan_mode: low
+    target:
+      entity_id: climate.ac_daikin
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ now().month in [12, 1, 2, 3] }}"
+            alias: Month is Dec - Mar inclusive
+        sequence:
+          - service: climate.set_fan_mode
+            metadata: {}
+            data:
+              fan_mode: low
+            target:
+              entity_id: climate.ac_daikin
+    default:
+      - service: climate.set_fan_mode
+        metadata: {}
+        data:
+          fan_mode: medium
+        target:
+          entity_id: climate.ac_daikin
+mode: single

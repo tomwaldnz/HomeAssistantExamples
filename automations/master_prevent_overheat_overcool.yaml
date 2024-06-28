@@ -1,0 +1,71 @@
+alias: AT Master Overnight Limit Damper Overheat Overcool 2200 - 0700
+description: >-
+  When Master bedroom damper is open wider than 66% for 5 seconds at night close the
+  damper down. If this is not done the room tends to get really hot while heating is on.
+  For smaller bedrooms I tend to set the limits lower - for a small bedroom if the
+  damper is over 58% I reset the damper to 50%
+trigger:
+  - platform: numeric_state
+    entity_id:
+      - fan.damper_master
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 5
+    attribute: percentage
+    above: 66
+condition:
+  - condition: device
+    device_id: airtouch4_device_id
+    domain: climate
+    entity_id: climate.ac_daikin
+    type: is_hvac_mode
+    hvac_mode: heat
+    enabled: false
+  - alias: Ducted Daikin is in heating or cooling mode
+    condition: or
+    conditions:
+      - condition: state
+        entity_id: climate.ac_daikin
+        state: cool
+      - condition: state
+        entity_id: climate.ac_daikin
+        state: heat
+  - condition: state
+    entity_id: fan.damper_master
+    state: "on"
+  - condition: state
+    entity_id: climate.itc_master
+    attribute: preset_mode
+    state: ITC
+  - condition: time
+    before: "07:30:00"
+    after: "22:00:00"
+action:
+  - service: climate.set_preset_mode
+    data:
+      preset_mode: Damper
+    target:
+      entity_id: climate.itc_master
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - service: fan.set_percentage
+    data:
+      percentage: 65
+    target:
+      entity_id: fan.damper_master
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - service: climate.set_preset_mode
+    data:
+      preset_mode: ITC
+    target:
+      entity_id: climate.itc_master
+    enabled: true
+mode: single

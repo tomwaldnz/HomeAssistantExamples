@@ -1,0 +1,55 @@
+alias: AT All zones off turn off system
+description: "When all zones are turned off, turn off the whole Airtouch system"
+trigger:
+  - platform: state
+    entity_id:
+      - climate.itc_living
+    to: "off"
+  - platform: state
+    entity_id:
+      - climate.itc_master
+    to: "off"
+  - platform: state
+    entity_id:
+      - climate.itc_small_bedroom
+    to: "off"
+  - platform: state
+    entity_id:
+      - climate.itc_guest
+    to: "off"
+condition:
+  - condition: state
+    entity_id: climate.itc_living
+    state: "off"
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+  - condition: state
+    entity_id: climate.itc_small_bedroom
+    state: "off"
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+  - condition: state
+    entity_id: climate.itc_master
+    state: "off"
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+  - condition: state
+    entity_id: climate.itc_guest
+    state: "off"
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+action:
+  - service: climate.set_hvac_mode
+    data:
+      hvac_mode: "off"
+    target:
+      entity_id: climate.ac_daikin
+mode: single

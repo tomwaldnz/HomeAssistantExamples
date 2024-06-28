@@ -1,0 +1,97 @@
+alias: AT Heating Spill Bedrooms
+description: >-
+  Alerts if any spill goes into the bedrooms in heat mode. Multiple alerts to
+  get attention, then voice alert.
+trigger:
+  - platform: state
+    entity_id:
+      - binary_sensor.zone_spill_guest
+    to: "on"
+    enabled: false
+  - platform: state
+    entity_id:
+      - binary_sensor.zone_spill_small_bedroom
+    to: "on"
+  - platform: state
+    entity_id:
+      - binary_sensor.zone_spill_master
+    to: "on"
+condition:
+  - condition: state
+    entity_id: climate.ac_daikin
+    state: heat
+action:
+  - service: climate.set_preset_mode
+    data:
+      preset_mode: Damper
+    target:
+      entity_id:
+        - climate.itc_living
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 250
+  - service: fan.set_percentage
+    data:
+      percentage: 100
+    target:
+      entity_id:
+        - fan.damper_living
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - service: climate.set_preset_mode
+    data:
+      preset_mode: ITC
+    target:
+      entity_id:
+        - climate.itc_living
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - service: fan.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: fan.damper_living
+  - service: notify.mobile_app_devicename
+    data:
+      message: Heating spill into bedrooms. Lounge damper fully opened to mitigate
+      data:
+        ttl: 0
+        priority: high
+        channel: alarm_stream
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  - service: notify.mobile_app_devicename
+    data:
+      data:
+        ttl: 0
+        priority: high
+        channel: alarm_stream
+      message: Heating spill into bedrooms. Lounge damper fully opened to mitigate
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  - service: notify.mobile_app_devicename
+    data:
+      message: TTS
+      title: Testing test test
+      data:
+        ttl: 0
+        priority: high
+        channel: alarm_stream_max
+        tts_text: >-
+          Attention! Attention! Heat is spilling into the bedrooms! Change spill
+          settings!
+mode: single
