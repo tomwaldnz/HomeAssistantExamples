@@ -5,6 +5,9 @@ Conditions such as month selectors are set up for the New Zealand / southern hem
 
 Most of these automations are relatively simple, anyone familiar with Home Assistant could likely write them, possibly better than I have. Beginners to Home Assistant may appreciate these automations to help get them started.
 
+## Adding these automations to your HA
+From the dashboard select automations -> new automation. Click the three dots at the top right of the screen and choose "Edit in YAML". Paste the automation in. You can then switch back to the visual editor. Once you get used to HA the YAML tends to be simpler to understand, but I often use the visual editor to set up the structure of an automation and find devices / entities.
+
 ## Device IDs
 The Airtouch device ID is a hex string that looks something like `1111aa11aa111aaa111aaa111aaa1aaa`. The simplest way I know to find your device ID is to create an automation, add a condition (device condition), then type in a few characters of your device name - it'll either be something like Airtouch or the brand of the heat pump you have. Do whatever is required to save the automation, then "view as YAML". The device ID should be in there. Delete the temporary automation.
 
