@@ -1,0 +1,126 @@
+alias: AT 1800 Living Heating May to Sept
+description: Simple automation to bring the living area up to preferred temperatures during the colder months of the year
+trigger:
+  - platform: time
+    at: "18:00:00"
+condition:
+  - condition: state
+    entity_id: input_boolean.ducted_heating_automations_enabled
+    state: "on"
+    enabled: false
+    alias: This ties into my room control system, so I can easily control whether automations are active or not. This lets me turn off all heating automations on warm days or turn off all automations while on holiday
+  - condition: template
+    value_template: "{{ now().month in [5, 6, 7, 8, 9] }}"
+    alias: Month is May - Nov
+action:
+  - service: fan.turn_on
+    data:
+      preset_mode: ITC
+    target:
+      entity_id:
+        - fan.damper_living
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 2
+      milliseconds: 0
+  - service: climate.set_hvac_mode
+    data:
+      hvac_mode: heat
+    target:
+      entity_id: climate.ac_daikin
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 2
+      milliseconds: 0
+  - if:
+      - condition: numeric_state
+        entity_id: climate.itc_living
+        attribute: temperature
+        below: 23
+    then:
+      - service: climate.set_temperature
+        metadata: {}
+        data:
+          temperature: 23
+        target:
+          entity_id: climate.itc_living
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 2
+      milliseconds: 0
+  - service: climate.set_fan_mode
+    data:
+      fan_mode: high
+    target:
+      entity_id: climate.ac_daikin
+  - delay:
+      hours: 0
+      minutes: 10
+      seconds: 0
+      milliseconds: 0
+  - service: fan.turn_on
+    data:
+      preset_mode: Damper
+    target:
+      entity_id:
+        - fan.damper_master
+        - fan.damper_small_bedroom
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  - service: fan.set_percentage
+    data:
+      percentage: 5
+    target:
+      entity_id:
+        - fan.damper_master
+        - fan.damper_small_bedroom
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  - service: fan.turn_on
+    data:
+      preset_mode: ITC
+    target:
+      entity_id:
+        - fan.damper_master
+        - fan.damper_small_bedroom
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 2
+      milliseconds: 0
+  - service: climate.set_temperature
+    data:
+      temperature: 20
+    target:
+      entity_id:
+        - climate.itc_master
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 2
+      milliseconds: 0
+  - service: climate.set_temperature
+    data:
+      temperature: 20
+    target:
+      entity_id: climate.itc_small_bedroom
+  - delay:
+      hours: 0
+      minutes: 10
+      seconds: 0
+      milliseconds: 0
+  - service: climate.set_fan_mode
+    data:
+      fan_mode: medium
+    target:
+      entity_id: climate.ac_daikin
+mode: single
