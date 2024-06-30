@@ -1,0 +1,25 @@
+title: Room Controls
+views:
+  - path: default_view
+    title: Room Controls
+    cards:
+      - type: entities
+        entities:
+          - entity: input_boolean.office_automations_enabled
+            name: Office Automations
+          - entity: input_boolean.kitchen_automations_enabled
+            name: Kitchen Automations
+          - entity: input_boolean.ducted_heating_automations_enabled
+            name: Ducted Heating Automations
+          - entity: input_boolean.ducted_cooling_automations_enabled
+            name: Ducted Cooling Automations
+          - entity: input_boolean.ducted_ventilation_automations_enabled
+            name: Ducted Ventilation Automations
+          - entity: input_boolean.pp_ventilation_automations_enabled
+            name: Positive Pressure Ventilation Automations
+          - entity: input_boolean.guest_automations_enabled
+            name: Guest Bedroom Automations
+          - entity: input_boolean.blinds_automations_enabled
+            name: Blind Automations
+        title: Room Controls
+    icon: mdi:home

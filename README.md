@@ -3,6 +3,9 @@ This repo provides examples of automations and related resources that I use for 
 
 The automations work with home assistant `2024.6.1'. I have modified the automations very slightly to add them to this git repo, there may be minor errors from the copy / paste / edit process.
 
+## Room / Area Controls
+A useful feature I developed is what I call "Room Controls". This lets me simply enable or disable automations for a room or resource using simple toggles.
+
 ## Important Recommendation
 It's strongly recommended you read all the README files in each folder that you use resources from. If you don't do that you'll probably have significant problems.
 

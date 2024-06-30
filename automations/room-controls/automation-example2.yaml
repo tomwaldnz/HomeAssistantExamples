@@ -1,0 +1,126 @@
+alias: AT 1130 Ventilation On Airtouch Winter May to Oct
+description: Turn on positive pressure ventilation and Airtouch fan mode to the bedrooms in summer
+trigger:
+  - platform: time
+    at: "11:30:00"
+condition:
+  - condition: state
+    entity_id: input_boolean.ducted_ventilation_automations_enabled
+    state: "on"
+  - condition: template
+    value_template: "{{ now().month in [5, 6, 7, 8, 9, 10] }}"
+    alias: Month is May - Oct
+  - condition: state
+    entity_id: climate.ac_daikin
+    state: "off"
+    enabled: true
+action:
+  - type: turn_on
+    device_id: positive-pressure-ventilation-device-id
+    entity_id: switch.ventilation
+    domain: switch
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  - service: climate.set_preset_mode
+    data:
+      preset_mode: Damper
+    target:
+      entity_id:
+        - climate.itc_living
+        - climate.itc_small_bedroom
+        - climate.itc_master
+  - service: fan.turn_off
+    data: {}
+    target:
+      entity_id: fan.damper_living
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  - service: fan.set_percentage
+    data:
+      percentage: 100
+    target:
+      entity_id:
+        - fan.damper_master
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  - service: fan.set_percentage
+    data:
+      percentage: 30
+    target:
+      entity_id: fan.itc_small_bedroom
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  - service: fan.turn_on
+    data: {}
+    target:
+      entity_id:
+        - fan.itc_small_bedroom
+        - fan.damper_master
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  - service: climate.set_hvac_mode
+    data:
+      hvac_mode: fan_only
+    target:
+      entity_id: climate.ac_daikin
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  - service: climate.set_fan_mode
+    data:
+      fan_mode: medium
+    target:
+      entity_id: climate.ac_daikin
+  - delay:
+      hours: 0
+      minutes: 60
+      seconds: 0
+      milliseconds: 0
+  - service: climate.set_preset_mode
+    data:
+      preset_mode: ITC
+    target:
+      entity_id:
+        - fan.damper_small_bedroom
+        - fan.damper_living
+        - fan.damper_master
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  - choose:
+      - conditions:
+          - condition: state
+            entity_id: climate.ac_daikin
+            state: fan_only
+        sequence:
+          - service: climate.turn_off
+            data: {}
+            target:
+              entity_id: climate.ac_daikin
+    alias: >-
+      Turn off the Airtouch if its in fan mode. This allows it to keep running
+      if its manually been changed to heating or cooling
+  - type: turn_off
+    device_id: positive-pressure-ventilation-device-id
+    entity_id: switch.ventilation
+    domain: switch
+mode: single

@@ -1,0 +1,41 @@
+# Add this section to your existing configuration.yaml
+input_boolean:
+  office_automations_enabled:
+    name: Office Automations Enabled
+    initial: false
+    icon: mdi:state-machine
+
+  guest_automations_enabled:
+    name: Guest Automations Enabled
+    initial: false
+    icon: mdi:state-machine
+
+  kitchen_automations_enabled:
+    name: Kitchen Automations Enabled
+    initial: false
+    icon: mdi:state-machine
+
+  ducted_heating_automations_enabled:
+    name: Ducted Heating Automations Enabled
+    initial: false
+    icon: mdi:state-machine
+
+  ducted_cooling_automations_enabled:
+    name: Ducted Cooling Automations Enabled
+    initial: false
+    icon: mdi:state-machine
+
+  ducted_ventilation_automations_enabled:
+    name: Ducted Ventilation Automations Enabled
+    initial: true
+    icon: mdi:state-machine
+
+  blinds_automations_enabled:
+    name: Blinds Automations Enabled
+    initial: true
+    icon: mdi:state-machine
+
+  pp_ventilation_automations_enabled:
+    name: Positive Pressure Ventilation Automations Enabled
+    initial: true
+    icon: mdi:state-machine
