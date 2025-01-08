@@ -3,6 +3,8 @@ This repo provides examples of automations and related resources that I use for 
 
 The automations work with home assistant `2024.6.1'. I have modified the automations very slightly to add them to this git repo, there may be minor errors from the copy / paste / edit process.
 
+I use [this Airtouch custom component](https://github.com/mihailescu2m/hass-airtouch4-platform). If I was starting again now I would look into [this component](https://github.com/TheNoctambulist/hass-airtouch) which is more actively maintained - though the component I use works perfectly and hasn't needed changes for months or maybe even years. 
+
 ## Room / Area Controls
 A useful feature I developed is what I call "Room Controls". This lets me simply enable or disable automations for a room or resource using simple toggles.
 
