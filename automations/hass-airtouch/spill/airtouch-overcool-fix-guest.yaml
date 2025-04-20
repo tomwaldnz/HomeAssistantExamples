@@ -1,0 +1,38 @@
+alias: ATSP Guest Overcooling Shut Down Damper
+description: >-
+  If the ducted unit is cooling, the temperature is 0.4C below the setpoint and
+  the damper is more than 39% open, close the damper down to 10%
+triggers:
+  - alias: >-
+      Ducted cool mode, damper over 39%, and current is 0.4C below setpoint
+      (e.g. setpoint 20, will trigger at 19.6)
+    trigger: template
+    value_template: >-
+      {{ states('sensor.daikin_ducted_hvac_state') == 'cool' and
+      state_attr("cover.pa_guest_damper", "current_position") | int > 39 and
+      ((state_attr("climate.pa_guest", "temperature") -
+            state_attr("climate.pa_guest", "current_temperature")) | round(1) >= 0.4 ) }}
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+conditions:
+  - condition: state
+    entity_id: climate.pa_guest
+    attribute: control_method
+    state: temperature
+actions:
+  - alias: Damper to 10%
+    action: cover.set_cover_position
+    data:
+      position: 10
+    target:
+      entity_id: cover.pa_guest_damper
+  - alias: Set damper back to temperature control
+    metadata: {}
+    data:
+      temperature: "{{ state_attr('climate.pa_guest', 'temperature') }}"
+    target:
+      entity_id: climate.pa_guest
+    action: climate.set_temperature
+mode: single

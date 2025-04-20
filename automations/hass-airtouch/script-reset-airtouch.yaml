@@ -1,0 +1,71 @@
+alias: Reset Airtouch to Standard
+description: Set the controls to our standard default positions. This changes by month
+sequence:
+  - alias: Set bedrooms to 20C
+    action: climate.set_temperature
+    metadata: {}
+    data:
+      temperature: 20
+    target:
+      entity_id:
+        - climate.pa_guest
+        - climate.pa_bedroom_small
+        - climate.pa_bedroom_large
+  - alias: Close bedroom_large, bedroom_small, Guest dampers
+    action: cover.close_cover
+    data: {}
+    target:
+      entity_id:
+        - cover.pa_guest_damper
+        - cover.pa_bedroom_large_damper
+        - cover.pa_bedroom_small_damper
+  - alias: Lounge damper to 100%
+    action: cover.set_cover_position
+    data:
+      position: 100
+    target:
+      entity_id: cover.pa_lounge_damper
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ now().month in [12, 1, 2] }}"
+            alias: Month is Dec - Feb inclusive
+        sequence:
+          - metadata: {}
+            data:
+              fan_mode: low
+            target:
+              entity_id: climate.pa_daikin
+            action: climate.set_fan_mode
+          - action: climate.set_temperature
+            metadata: {}
+            data:
+              temperature: 23
+            target:
+              entity_id: climate.pa_lounge
+          - action: airtouch.set_hvac_mode_only
+            metadata: {}
+            data:
+              hvac_mode: cool
+            target:
+              entity_id: climate.pa_daikin
+    default:
+      - metadata: {}
+        data:
+          fan_mode: medium
+        target:
+          entity_id: climate.pa_daikin
+        action: climate.set_fan_mode
+      - action: climate.set_temperature
+        metadata: {}
+        data:
+          temperature: 23
+        target:
+          entity_id: climate.pa_lounge
+      - action: airtouch.set_hvac_mode_only
+        metadata: {}
+        data:
+          hvac_mode: heat
+        target:
+          entity_id: climate.pa_daikin
+mode: single

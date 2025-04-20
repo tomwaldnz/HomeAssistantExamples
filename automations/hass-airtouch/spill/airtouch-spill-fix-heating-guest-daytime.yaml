@@ -1,0 +1,52 @@
+alias: ATP Guest Spill Fix Heat Daytime
+description: >-
+  If Guest damper is 20% - 90% and no more than 0.2 degrees above setpoint open
+  the damper fully. This is to ensure fast heating and to reduce spill. The 20 second limit
+  aims to stop constantly oscillation in damper settings.
+triggers:
+  - trigger: numeric_state
+    entity_id:
+      - cover.pa_guest_damper
+    attribute: current_position
+    above: 16
+    below: 91
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 20
+conditions:
+  - condition: state
+    entity_id: climate.pa_daikin
+    state: heat
+  - alias: Room is enabled
+    condition: state
+    entity_id: cover.pa_guest_damper
+    state: open
+  - condition: time
+    after: "09:00:00"
+    before: "21:00:00"
+  - alias: >-
+      Current room temperature is no more than 0.2 degrees above target
+      temperature
+    condition: template
+    value_template: >-
+      {{ state_attr("climate.pa_guest", "current_temperature") -
+      state_attr("climate.pa_guest", "temperature") <= 0.2}}
+  - condition: state
+    entity_id: sensor.daikin_ducted_hvac_state
+    state: heat
+    alias: Outside unit state is heat. Without this the action triggers constantly.
+actions:
+  - alias: Damper to 100%
+    action: cover.set_cover_position
+    data:
+      position: 100
+    target:
+      entity_id: cover.pa_guest_damper
+  - action: climate.set_temperature
+    data:
+      temperature: "{{ state_attr('climate.pa_guest', 'temperature') }}"
+    target:
+      entity_id:
+        - climate.pa_guest
+mode: single

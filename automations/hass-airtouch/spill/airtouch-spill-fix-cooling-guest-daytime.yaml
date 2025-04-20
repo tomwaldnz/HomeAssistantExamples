@@ -1,0 +1,53 @@
+alias: ATSP Guest Spill Fix Cooling Daytime Fast Cooling
+description: >-
+  If damper is 20% - 90% and no more than 0.25 degrees below setpoint open the
+  damper fully. This is to ensure fast cooling and to reduce spill. The 20 second limit
+  aims to stop constantly oscillation in damper settings.
+triggers:
+  - trigger: numeric_state
+    entity_id:
+      - cover.pa_guest_damper
+    attribute: current_position
+    above: 16
+    below: 91
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 20
+conditions:
+  - condition: state
+    entity_id: climate.pa_daikin
+    state: cool
+  - alias: Room is enabled
+    condition: state
+    entity_id: cover.pa_guest_damper
+    state: open
+  - condition: time
+    after: "09:00:00"
+    before: "19:00:00"
+  - alias: >-
+      Current room temperature is no more than 0.25 degrees below target
+      temperature
+    condition: template
+    value_template: >-
+      {{ (state_attr("climate.pa_guest", "temperature") -
+      state_attr("climate.pa_guest", "current_temperature") <= 0.25 )  }}
+  - alias: Outside unit state is cool. Without this the action triggers constantly.
+    condition: state
+    entity_id: sensor.daikin_ducted_hvac_state
+    state: cool
+actions:
+  - alias: Damper to 100%
+    action: cover.set_cover_position
+    data:
+      position: 100
+    target:
+      entity_id: cover.pa_guest_damper
+  - alias: Reset to temperature control
+    action: climate.set_temperature
+    data:
+      temperature: "{{ state_attr('climate.pa_guest', 'temperature') }}"
+    target:
+      entity_id:
+        - climate.pa_guest
+mode: single

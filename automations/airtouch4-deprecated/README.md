@@ -5,6 +5,9 @@ Conditions such as month selectors are set up for the New Zealand / southern hem
 
 Most of these automations are relatively simple, anyone familiar with Home Assistant could likely write them, possibly better than I have. Beginners to Home Assistant may appreciate these automations to help get them started.
 
+> ⚠️⚠️⚠️ **IMPORTANT:**  ⚠️⚠️⚠️
+> This repository is deprecated as the hass-airtouch4-platform was abandoned by its author. Around Jan 2025 the Climate inteface for Home Assistant was updated, the component would have needed to be updated to continue to work. This was not done, and as a result users would have had to stay on HA 2024.12. [This integration](https://github.com/TheNoctambulist/hass-airtouch) is recommended - see the "hass-airtouch" folder in this repo for automations that work with the new integration.
+
 ## Adding these automations to your HA
 From the dashboard select automations -> new automation. Click the three dots at the top right of the screen and choose "Edit in YAML". Paste the automation in. You can then switch back to the visual editor. Once you get used to HA the YAML tends to be simpler to understand, but I often use the visual editor to set up the structure of an automation and find devices / entities.
 

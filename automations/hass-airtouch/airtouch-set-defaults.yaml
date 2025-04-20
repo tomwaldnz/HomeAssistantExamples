@@ -1,0 +1,40 @@
+alias: ATP Off Reset to defaults
+description: >-
+  Reset everything to our preferred modes if turned off during the day. Don't reset at night as a
+  restart or exception in the log can prevent bedroom heating
+triggers:
+  - entity_id:
+      - climate.pa_daikin
+    to: "off"
+    trigger: state
+conditions:
+  - condition: time
+    after: "07:00:00"
+    before: "22:00:00"
+actions:
+  - metadata: {}
+    data: {}
+    action: script.reset_airtouch
+  - alias: >-
+      If its between 6pm and 7pm preset the Airtouch to heat mode / 23c without
+      turning it on. Make sure to set up the associated script in script-reset-airtouch.yaml.
+      I cant remember why I set this up but I probably had a good reason.
+    if:
+      - condition: time
+        after: "18:00:00"
+        before: "19:00:00"
+    then:
+      - alias: Set Airtouch to Heat mode without turning it on
+        action: airtouch.set_hvac_mode_only
+        metadata: {}
+        data:
+          hvac_mode: heat
+        target:
+          entity_id: climate.pa_daikin
+      - action: climate.set_temperature
+        metadata: {}
+        data:
+          temperature: 23
+        target:
+          entity_id: climate.pa_lounge
+mode: single

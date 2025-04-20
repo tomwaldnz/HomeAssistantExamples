@@ -1,0 +1,42 @@
+alias: ATP Guest Overheat Fix
+description: >-
+  If room is 0.3 degrees over setpoint reduce the damper. This is useful when using the spill fix actions
+  which keep the dampers open for longer. Airtouch ramps the damper position down slowly, too slowly given
+  the damper manipulation being done, so we have to bring it down quickly ourselves to prevent overheating.
+triggers:
+  - alias: Current temperature is 0.3 degrees above room setpoint
+    value_template: >-
+      {{ state_attr("climate.pa_guest", "current_temperature") -
+      state_attr("climate.pa_guest", "temperature") > 0.25}}
+    trigger: template
+conditions:
+  - condition: state
+    entity_id: climate.pa_daikin
+    state: heat
+  - condition: state
+    entity_id: cover.pa_guest_damper
+    state: open
+  - condition: numeric_state
+    entity_id: cover.pa_guest_damper
+    above: 42
+    attribute: current_position
+    below: 105
+  - condition: state
+    entity_id: climate.pa_guest
+    attribute: control_method
+    state: temperature
+actions:
+  - alias: Reduce damper position
+    action: cover.set_cover_position
+    data:
+      position: 30
+    target:
+      entity_id: cover.pa_guest_damper
+  - alias: Set room back to temperature control
+    metadata: {}
+    data:
+      temperature: "{{ state_attr('climate.pa_guest', 'temperature') }}"
+    target:
+      entity_id: climate.pa_guest
+    action: climate.set_temperature
+mode: single
