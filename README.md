@@ -3,7 +3,7 @@ This repo provides examples of automations and related resources that I use for 
 
 The automations work with home assistant `2025.04.1'. I have modified the automations very slightly to add them to this git repo, there may be minor errors from the copy / paste / edit process.
 
-I use [hass-airtouch](https://github.com/TheNoctambulist/hass-airtouch), which as of April 2025 is actively maintained. Automations for this integration are in the "hass-airtouch" folder.
+I use the [hass-airtouch](https://github.com/TheNoctambulist/hass-airtouch) integration, which as of April 2025 is actively maintained. Automations for this integration are in the "hass-airtouch" folder.
 
 The "airtouch4-deprecated" folder contains automations based on older integration I used to use. That integration is not longer maintained and doesn't work with HA 2025.
 
