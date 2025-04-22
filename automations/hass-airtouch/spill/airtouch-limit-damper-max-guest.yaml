@@ -31,6 +31,29 @@ conditions:
   - condition: time
     before: "06:30:00"
     after: "21:30:00"
+  - alias: Current temperature is at least 0.3 degrees from target
+    condition: or
+    conditions:
+      - alias: Heating mode & no more than 0.2 degrees above the setpoint
+        condition: and
+        conditions:
+          - condition: state
+            entity_id: climate.pa_daikin
+            state: heat
+          - condition: template
+            value_template: |-
+              {{ state_attr("climate.pa_guest", "current_temperature") -
+                    state_attr("climate.pa_guest", "temperature") <= 0.25}}
+      - alias: Cooling mode & no more than 0.2 degrees below the setpoint
+        condition: and
+        conditions:
+          - condition: state
+            entity_id: climate.pa_daikin
+            state: cool
+          - condition: template
+            value_template: >-
+              {{ (state_attr("climate.pa_guest", "temperature") -
+              state_attr("climate.pa_guest", "current_temperature") <= 0.25 ) }}
 actions:
   - alias: Damper to 60%
     action: cover.set_cover_position
