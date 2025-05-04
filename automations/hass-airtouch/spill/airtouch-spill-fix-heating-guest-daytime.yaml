@@ -14,6 +14,11 @@ triggers:
       hours: 0
       minutes: 0
       seconds: 20
+  - alias: Trigger on room temperature changes - this is a more reliable trigger due to the way HA triggers work with ranges
+    trigger: state
+    entity_id:
+      - climate.pa_guest
+    attribute: current_temperature
 conditions:
   - condition: state
     entity_id: climate.pa_daikin
@@ -31,11 +36,17 @@ conditions:
     condition: template
     value_template: >-
       {{ state_attr("climate.pa_guest", "current_temperature") -
-      state_attr("climate.pa_guest", "temperature") <= 0.2}}
+      state_attr("climate.pa_guest", "temperature") < 0.25}}
+  - alias: Damper is not fully open and is not about to close
+    condition: numeric_state
+    entity_id: cover.pa_guest_damper
+    attribute: current_position
+    above: 16
+    below: 91
   - condition: state
     entity_id: sensor.daikin_ducted_hvac_state
     state: heat
-    alias: Outside unit state is heat. Without this the action triggers constantly.
+    alias: Outside unit state is heat. Without this the action triggers constantly. This requires either a power usage detector on the circuit running the heat pump or the AppDaemon "hvac_energymonitor1" script, which as of May 2025 I havent released yet. Experimentation will be required to make this work properly without either
 actions:
   - alias: Damper to 100%
     action: cover.set_cover_position
