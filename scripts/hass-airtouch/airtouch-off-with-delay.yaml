@@ -1,0 +1,44 @@
+alias: Airtouch Off With Delay
+description: >-
+  Turn the Ducted system to fan only mode for the specified number of seconds,
+  then turn ducted system off entirely
+fields:
+  seconds:
+    description: How many seconds to switch to fan mode before turning the system off
+    example: 120
+sequence:
+  - alias: If ducted system is turned on change to fan mode then turn it off
+    if:
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: climate.pa_daikin
+            state: "off"
+    then:
+      - alias: PA Daikin Ducted to Fan Only mode
+        action: climate.set_hvac_mode
+        metadata: {}
+        data:
+          hvac_mode: fan_only
+        target:
+          entity_id: climate.pa_daikin
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: "{{ seconds }}"
+          milliseconds: 0
+      - alias: >-
+          If PA Daikin Ducted is still set to fan only turn it off. If a person
+          has changed it to something else dont turn off
+        choose:
+          - conditions:
+              - condition: state
+                entity_id: climate.pa_daikin
+                state: fan_only
+            sequence:
+              - action: climate.turn_off
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: climate.pa_daikin
+mode: single

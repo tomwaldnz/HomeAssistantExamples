@@ -1,0 +1,449 @@
+title: Ducted HVAC
+views:
+  - title: Airtouch
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: custom:simple-thermostat
+            entity: climate.pa_daikin
+            layout:
+              mode:
+                headings: false
+                icons: true
+                names: true
+            header: false
+            sensors:
+              - entity: sensor.outside_temperature_current
+                name: Temperature
+                icon: mdi:sun-thermometer-outline
+                decimals: 1
+            hide:
+              temperature: true
+              state: true
+            setpoints:
+              target_temp_low:
+                hide: true
+              target_temp_high:
+                hide: true
+            control:
+              hvac:
+                heat_cool: false
+                dry: false
+                fan_only:
+                  name: fan
+                heat:
+                  name: heat
+                cool:
+                  name: cool
+                'off':
+                  name: 'off'
+              fan:
+                high:
+                  name: High
+                medium:
+                  name: Medium
+                low:
+                  name: Low
+            style: |
+              ha-card {
+                  --st-font-size-xl: 60px;
+                  --st-font-size-m: 30px;
+                  --st-font-size-title: 15px;
+                  --st-font-size-sensors: 20px;
+                  --st-spacing: 3px;
+              }
+          - type: horizontal-stack
+            cards:
+              - type: custom:mushroom-template-card
+                primary: Living
+                icon: |
+                  {% if is_state("cover.pa_lounge_damper", "open") %}
+                    mdi:fan
+                  {% else %}
+                    mdi:circle-off-outline
+                  {% endif %}
+                icon_color: |
+                  {% if is_state("cover.pa_lounge_damper", "open") %}
+                    #1192f5
+                  {% else %}
+                    #aaaaaa
+                  {% endif %}
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: cover.toggle
+                  service_data:
+                    entity_id: cover.pa_lounge_damper
+                secondary_info: none
+              - type: custom:mushroom-template-card
+                primary: Master
+                icon: |
+                  {% if is_state("cover.pa_master_damper", "open") %}
+                    mdi:fan
+                  {% else %}
+                    mdi:circle-off-outline
+                  {% endif %}
+                icon_color: |
+                  {% if is_state("cover.pa_master_damper", "open") %}
+                    #1192f5
+                  {% else %}
+                    #aaaaaa
+                  {% endif %}
+                name: Master
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: cover.toggle
+                  service_data:
+                    entity_id: cover.pa_master_damper
+                secondary_info: none
+              - type: custom:mushroom-template-card
+                primary: Child
+                icon: |
+                  {% if is_state("cover.pa_child_damper", "open") %}
+                    mdi:fan
+                  {% else %}
+                    mdi:circle-off-outline
+                  {% endif %}
+                icon_color: |
+                  {% if is_state("cover.pa_child_damper", "open") %}
+                    blue
+                  {% else %}
+                    #aaaaaa
+                  {% endif %}
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: cover.toggle
+                  service_data:
+                    entity_id: cover.pa_child_damper
+                secondary_info: none
+              - type: custom:mushroom-template-card
+                primary: Guest
+                icon: |
+                  {% if is_state("cover.pa_guest_damper", "open") %}
+                    mdi:fan
+                  {% else %}
+                    mdi:circle-off-outline
+                  {% endif %}
+                icon_color: |
+                  {% if is_state("cover.pa_guest_damper", "open") %}
+                    blue
+                  {% else %}
+                    #aaaaaa
+                  {% endif %}
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: cover.toggle
+                  service_data:
+                    entity_id: cover.pa_guest_damper
+                secondary_info: none
+          - type: horizontal-stack
+            cards:
+              - type: custom:simple-thermostat
+                entity: climate.pa_lounge
+                layout:
+                  step: column
+                hide:
+                  state: false
+                  temperature: false
+                control: false
+                header: false
+                sensors: false
+                fallback: '%'
+                style: |
+                  ha-card {
+                    { # removed but put back if needed background: #fff; # }
+                    --primary-text-color: {% if state_attr('climate.pa_lounge', 'control_method') == 'temperature' %}{% else %}pink{% endif %};
+                    --st-font-size-xl: 20px;
+                    --st-spacing: 1px;
+                  } 
+                step_size: '1'
+                decimals: '0'
+              - type: custom:simple-thermostat
+                entity: climate.pa_master
+                layout:
+                  step: column
+                hide:
+                  state: true
+                control: false
+                header: false
+                sensors: false
+                fallback: '%'
+                style: |
+                  ha-card {
+                    --primary-text-color: {% if state_attr('climate.pa_master', 'control_method') == 'temperature' %}{% else %}pink{% endif %};
+                    --st-font-size-xl: 20px;
+                    --st-spacing: 1px;
+                  } 
+                decimals: '0'
+                step_size: '1'
+              - type: custom:simple-thermostat
+                entity: climate.pa_child
+                layout:
+                  step: column
+                hide:
+                  state: true
+                control: false
+                header: false
+                sensors: false
+                fallback: '%'
+                style: |
+                  ha-card {
+                    --primary-text-color: {% if state_attr('climate.pa_child', 'control_method') == 'temperature' %}{% else %}pink{% endif %};
+                    --st-font-size-xl: 20px;
+                    --st-spacing: 1px;
+                  } 
+                decimals: '0'
+                step_size: '1'
+              - type: custom:simple-thermostat
+                entity: climate.pa_guest
+                layout:
+                  step: column
+                hide:
+                  state: true
+                control: false
+                header: false
+                sensors: false
+                fallback: '%'
+                style: |
+                  ha-card {
+                    --primary-text-color: {% if state_attr('climate.pa_guest', 'control_method') == 'temperature' %}{% else %}pink{% endif %};
+                    --st-font-size-xl: 20px;
+                    --st-spacing: 1px;
+                  } 
+                decimals: '0'
+                step_size: '1'
+          - type: horizontal-stack
+            cards:
+              - type: custom:mushroom-template-card
+                primary: '{{ state_attr("climate.pa_lounge", "current_temperature") }}°'
+                secondary: |-
+                  {% if states("cover.pa_lounge_damper") == "open" %}
+                    {% set hvacState = states("cover.pa_lounge_damper") | capitalize %}
+                    {% set state = state_attr("cover.pa_lounge_damper", "current_position") | lower + "%" if hvacState != "closed" else "Off" %}
+                  {% else %}
+                    {% set state = "Off" %}
+                  {% endif %} {{ state }}
+                layout: vertical
+                entity: Lounge
+                tap_action:
+                  action: call-service
+                  service: automation.trigger
+                  target:
+                    entity_id: automation.atp_lounge_toggle_temperature_percentage_modes
+                hold_action:
+                  action: navigate
+                  navigation_path: /monitoring-2025/lounge
+                card_mod:
+                  style: |
+                    ha-card {
+                      --card-primary-font-size: 16px;
+                      --card-secondary-font-size: 15px;
+                      --icon-size: 42px;
+                    }
+              - type: custom:mushroom-template-card
+                primary: '{{ state_attr("climate.pa_master", "current_temperature") }}°'
+                secondary: |-
+                  {% if states("cover.pa_master_damper") == "open" %}
+                    {% set hvacState = states("cover.pa_master_damper") | capitalize %}
+                    {% set state = state_attr("cover.pa_master_damper", "current_position") | lower + "%" if hvacState != "closed" else "Off" %}
+                  {% else %}
+                    {% set state = "Off" %}
+                  {% endif %} {{ state }}
+                layout: vertical
+                entity: Master
+                tap_action:
+                  action: call-service
+                  service: automation.trigger
+                  target:
+                    entity_id: automation.atp_master_toggle_temperature_percentage_modes
+                hold_action:
+                  action: navigate
+                  navigation_path: /monitoring-2025/master
+                card_mod:
+                  style: |
+                    ha-card {
+                      --card-primary-font-size: 16px;
+                      --card-secondary-font-size: 15px;
+                      --icon-size: 42px;
+                    }
+              - type: custom:mushroom-template-card
+                primary: '{{ state_attr("climate.pa_child", "current_temperature") }}°'
+                secondary: |-
+                  {% if states("cover.pa_child_damper") == "open" %}
+                    {% set hvacState = states("cover.pa_child_damper") | capitalize %}
+                    {% set state = state_attr("cover.pa_child_damper", "current_position") | lower + "%" if hvacState != "closed" else "Off" %}
+                  {% else %}
+                    {% set state = "Off" %}
+                  {% endif %} {{ state }}
+                layout: vertical
+                entity: Child
+                tap_action:
+                  action: call-service
+                  service: automation.trigger
+                  target:
+                    entity_id: automation.atp_Child_toggle_temperature_percentage_modes
+                hold_action:
+                  action: navigate
+                  navigation_path: /monitoring-2025/Child
+                card_mod:
+                  style: |
+                    ha-card {
+                      --card-primary-font-size: 16px;
+                      --card-secondary-font-size: 15px;
+                      --icon-size: 42px;
+                    }
+              - type: custom:mushroom-template-card
+                primary: '{{ state_attr("climate.pa_guest", "current_temperature") }}°'
+                secondary: |-
+                  {% if states("cover.pa_guest_damper") == "open" %}
+                    {% set hvacState = states("cover.pa_guest_damper") | capitalize %}
+                    {% set state = state_attr("cover.pa_guest_damper", "current_position") | lower + "%" if hvacState != "closed" else "Off" %}
+                  {% else %}
+                    {% set state = "Off" %}
+                  {% endif %} {{ state }}
+                layout: vertical
+                entity: Guest
+                tap_action:
+                  action: call-service
+                  service: automation.trigger
+                  target:
+                    entity_id: automation.atp_guest_toggle_temperature_percentage_modes
+                hold_action:
+                  action: navigate
+                  navigation_path: /monitoring-2025/guest
+                card_mod:
+                  style: |
+                    ha-card {
+                      --card-primary-font-size: 16px;
+                      --card-secondary-font-size: 15px;
+                      --icon-size: 42px;
+                    }
+          - type: horizontal-stack
+            cards:
+              - type: conditional
+                conditions:
+                  - entity: cover.pa_lounge_damper
+                    state: open
+                  - entity: sensor.control_method_living
+                    state: damper
+                card:
+                  type: custom:slider-entity-row
+                  name: Lounge Damper
+                  entity: cover.pa_lounge_damper
+                  attribute: position
+                  min: 5
+                  max: 100
+                  step: 5
+                  grow: true
+                  toggle: false
+                  full_row: false
+          - type: horizontal-stack
+            cards:
+              - type: conditional
+                conditions:
+                  - entity: cover.pa_master_damper
+                    state: open
+                  - entity: sensor.control_method_master
+                    state: damper
+                card:
+                  type: custom:slider-entity-row
+                  name: Master Damper
+                  entity: cover.pa_master_damper
+                  attribute: position
+                  min: 5
+                  max: 100
+                  step: 5
+                  grow: true
+                  toggle: false
+                  full_row: false
+          - type: horizontal-stack
+            cards:
+              - type: conditional
+                conditions:
+                  - entity: cover.pa_child_damper
+                    state: open
+                  - entity: sensor.control_method_Child
+                    state: damper
+                card:
+                  type: custom:slider-entity-row
+                  name: Child Damper
+                  entity: cover.pa_child_damper
+                  attribute: position
+                  min: 5
+                  max: 100
+                  step: 5
+                  grow: true
+                  toggle: false
+                  full_row: false
+          - type: horizontal-stack
+            cards:
+              - type: conditional
+                conditions:
+                  - entity: cover.pa_guest_damper
+                    state: open
+                  - entity: sensor.control_method_guest
+                    state: damper
+                card:
+                  type: custom:slider-entity-row
+                  name: Guest Damper
+                  entity: cover.pa_guest_damper
+                  attribute: position
+                  min: 5
+                  max: 100
+                  step: 5
+                  grow: true
+                  toggle: false
+                  full_row: false
+          - type: horizontal-stack
+            cards:
+              - type: entities
+                show_header_toggle: false
+                entities:
+                  - entity: input_number.ducted_ac_off_timer
+                    name: Off Timer
+                    icon: mdi:play-outline
+                    tap_action:
+                      action: call-service
+                      service: script.airtouch_off_with_delay
+                      data:
+                        seconds: '300'
+                  - type: conditional
+                    conditions:
+                      - entity: sensor.countdown_timer_ducted
+                        state: 'on'
+                    row:
+                      type: attribute
+                      entity: sensor.countdown_timer_ducted
+                      attribute: counter_minutes
+                      name: Time until off
+                      suffix: mins
+                  - type: conditional
+                    conditions:
+                      - entity: sensor.countdown_timer_ducted
+                        state: 'on'
+                    row:
+                      type: attribute
+                      entity: sensor.countdown_timer_ducted
+                      attribute: finish_time
+                      name: Finish Time
+          - type: horizontal-stack
+            cards:
+              - type: conditional
+                conditions:
+                  - entity: climate.pa_daikin
+                    state: fan_only
+                card:
+                  type: custom:mushroom-template-card
+                  primary: Cooldown running
+                  icon: mdi:fan-chevron-down
+                  icon_color: blue
+                  layout: vertical
+                  card_mod:
+                    style: |
+                      ha-card {
+                        --card-primary-font-weight: medium;
+                      }
+    icon: mdi:air-conditioner
