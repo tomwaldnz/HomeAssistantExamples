@@ -1,0 +1,9 @@
+      # Ducted HVAC on time - simpler to display when it's a sensor / entity than when it's an input text
+      - name: "PA Daikin Airtouch On Delay Text"
+        unique_id: pa_daikin_airtouch_on_delay_text
+        state: "{{ states('input_text.pa_daikin_airtouch_on_delay') }}"
+
+      # Ducted HVAC off time - simpler to display when it's a sensor / entity than when it's an input text
+      - name: "PA Daikin Airtouch Off Delay Text"
+        unique_id: pa_daikin_airtouch_off_delay_text
+        state: "{{ states('input_text.pa_daikin_airtouch_off_delay') }}"

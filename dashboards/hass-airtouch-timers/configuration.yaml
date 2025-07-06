@@ -1,0 +1,43 @@
+
+input_number:
+  ducted_ac_airtouch_off_timer:
+    name: Ducted AC Off Timer
+    initial: 0
+    min: 0
+    max: 240
+    step: 5
+    unit_of_measurement: mins
+    icon: mdi:fan
+  ducted_ac_airtouch_on_timer:
+    name: Ducted AC On Timer
+    initial: 0
+    min: 0
+    max: 240
+    step: 5
+    unit_of_measurement: mins
+    icon: mdi:fan
+
+input_text:
+  # Airtouch on delay, for native airtouch timer use
+  pa_daikin_airtouch_on_delay:
+    name: PA Daikin Airtouch On Delay
+    icon: mdi:timer-outline
+    initial: ""
+
+  pa_daikin_airtouch_off_delay:
+    name: PA Daikin Airtouch Off Delay
+    icon: mdi:timer-outline
+    initial: ""
+
+input_datetime:
+  # Airtouch on time, for native airtouch timer use
+  pa_daikin_airtouch_on_time:
+    name: PA Daikin Airtouch On Time
+    has_date: false
+    has_time: true
+
+  # Airtouch off time, for native airtouch timer use
+  pa_daikin_airtouch_off_time:
+    name: PA Daikin Airtouch Off Time
+    has_date: false
+    has_time: true

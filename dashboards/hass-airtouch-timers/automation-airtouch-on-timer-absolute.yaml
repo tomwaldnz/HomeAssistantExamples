@@ -1,0 +1,13 @@
+alias: ATP Airtouch Timers Set On Time to Absolute
+description: Set the Airtouch on timer to the value entered in the time setter
+triggers:
+  - entity_id: input_datetime.pa_daikin_airtouch_on_time
+    trigger: state
+conditions: []
+actions:
+  - action: time.set_value
+    data:
+      time: "{{ states('input_datetime.pa_daikin_airtouch_on_time') }}"
+    target:
+      entity_id: time.pa_daikin_on_timer
+mode: single

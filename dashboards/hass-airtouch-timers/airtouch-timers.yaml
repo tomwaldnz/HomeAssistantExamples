@@ -1,0 +1,277 @@
+title: HVAC Power Control Dashboard
+views:
+  - title: HVAC Power Control
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: template
+                content: Mode Set
+                card_mod:
+                  style: |
+                    mushroom-shape-icon$:
+                      .shape {
+                        display: none !important;
+                      }
+                    ha-card {
+                      box-shadow: none !important;
+                      border: none !important;
+                      background: none !important;
+                      padding: 0 8px !important;
+                    }
+              - type: template
+                icon: mdi:fire
+                icon_color: red
+                content: Heat
+                tap_action:
+                  action: call-service
+                  service: airtouch.set_hvac_mode_only
+                  data:
+                    entity_id: climate.pa_daikin
+                    hvac_mode: heat
+                card_mod:
+                  style: >
+                    {% if state_attr('climate.pa_daikin',
+                    'last_active_hvac_mode') == 'heat' %}
+
+                    ha-card {
+                      --chip-box-shadow: 0 0 0 2px red !important;
+                      --chip-font-weight: 600 !important;
+                    }
+
+                    {% else %}none{% endif %}
+              - type: template
+                icon: mdi:snowflake
+                icon_color: blue
+                content: Cool
+                tap_action:
+                  action: call-service
+                  service: airtouch.set_hvac_mode_only
+                  data:
+                    entity_id: climate.pa_daikin
+                    hvac_mode: cool
+                card_mod:
+                  style: >
+                    {% if state_attr('climate.pa_daikin',
+                    'last_active_hvac_mode') == 'cool' %}
+
+                    ha-card {
+                      --chip-box-shadow: 0 0 0 2px blue !important;
+                      --chip-font-weight: 600 !important;
+                    }
+
+                    {% else %}none{% endif %}
+              - type: template
+                icon: mdi:fan
+                icon_color: teal
+                content: Fan
+                tap_action:
+                  action: call-service
+                  service: airtouch.set_hvac_mode_only
+                  data:
+                    entity_id: climate.pa_daikin
+                    hvac_mode: fan_only
+                card_mod:
+                  style: >
+                    {% if state_attr('climate.pa_daikin',
+                    'last_active_hvac_mode') == 'fan_only' %}
+
+                    ha-card {
+                      --chip-box-shadow: 0 0 0 2px green !important;
+                      --chip-font-weight: 600 !important;
+                    }
+
+                    {% else %}none{% endif %}
+            card_mod:
+              style: |
+                ha-card {
+                  border: 1px solid var(--ha-card-border-color, #888) !important;
+                  border-radius: var(--ha-card-border-radius, 12px) !important;
+                  background: var(--card-background-color, white) !important;
+                  box-shadow: var(--ha-card-box-shadow, none) !important;
+                  padding: 8px 0;
+                  width: 100%;
+                  max-width: 100%;
+                  
+                  --chip-font-size: 0.35em !important;
+                  --chip-font-weight: 400 !important;
+                }
+                mushroom-chips-card {
+                  width: 100%;
+                }
+                .chip-container {
+                  display: flex !important;
+                  justify-content: center !important;
+                }
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: template
+                content: 'On'
+                card_mod:
+                  style: |
+                    mushroom-shape-icon$:
+                      .shape {
+                        display: none !important;
+                      }
+                    ha-card {
+                      box-shadow: none !important;
+                      border: none !important;
+                      background: none !important;
+                      padding: 0 8px !important;
+                    }
+              - type: template
+                content: >
+                  {{ "Not Set" if states('time.pa_daikin_on_timer') == "unknown"
+                  else states('time.pa_daikin_on_timer') }} 
+              - type: template
+                content: 'Off'
+                card_mod:
+                  style: |
+                    mushroom-shape-icon$:
+                      .shape {
+                        display: none !important;
+                      }
+                    ha-card {
+                      box-shadow: none !important;
+                      border: none !important;
+                      background: none !important;
+                      padding: 0 8px !important;
+                    }
+              - type: template
+                content: >
+                  {{ "Not Set" if states('time.pa_daikin_off_timer') ==
+                  "unknown" else states('time.pa_daikin_off_timer') }}
+                card_mod:
+                  style: |
+                    mushroom-shape-icon$:
+                      .shape {
+                        display: none !important;
+                      }
+            card_mod: null
+            style: |
+              ha-card {
+                border: 1px solid var(--ha-card-border-color, #888) !important;
+                border-radius: var(--ha-card-border-radius, 12px) !important;
+                padding: 8px 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+
+
+                --chip-font-size: 0.38em !important;
+                --chip-font-weight: 400 !important;
+
+              }
+              .chip-container {
+                width: 100% !important;
+                display: flex !important;
+                justify-content: center !important;
+              }
+          - type: horizontal-stack
+            cards:
+              - type: entities
+                show_header_toggle: false
+                entities:
+                  - type: custom:slider-entity-row
+                    entity: input_number.ducted_ac_airtouch_on_timer
+                    name: On (mins)
+                    hide_state: true
+                    min: 0
+                    max: 240
+                    step: 5
+                    icon: mdi:timer-outline
+                card_mod:
+                  style: |
+                    ha-card {
+                      border: 1px solid var(--ha-card-border-color, #888) !important;
+                    }
+          - type: horizontal-stack
+            cards:
+              - type: entities
+                show_header_toggle: false
+                entities:
+                  - type: custom:slider-entity-row
+                    entity: input_number.ducted_ac_airtouch_off_timer
+                    name: Off (mins)
+                    hide_state: true
+                    min: 0
+                    max: 240
+                    step: 5
+                    icon: mdi:timer-off-outline
+                card_mod:
+                  style: |
+                    ha-card {
+                      border: 1px solid var(--ha-card-border-color, #888) !important;
+                    }
+          - type: custom:time-picker-card
+            entity: input_datetime.pa_daikin_airtouch_on_time
+            name: On Time
+            icon: mdi:timer-off
+            hour_mode: 24
+            link_values: true
+            layout:
+              name: inside
+              align_controls: center
+              thin: true
+            hide:
+              name: false
+              seconds: true
+              icon: true
+            card_mod:
+              style: |
+                ha-card {
+                  border: 1px solid var(--ha-card-border-color, #888) !important;
+                }
+          - type: custom:time-picker-card
+            entity: input_datetime.pa_daikin_airtouch_off_time
+            name: Off Time
+            hour_mode: 24
+            link_values: true
+            layout:
+              name: inside
+              align_controls: center
+              thin: true
+            hide:
+              name: false
+              seconds: true
+              icon: true
+            card_mod:
+              style: |
+                ha-card {
+                  border: 1px solid var(--ha-card-border-color, #888) !important;
+                  /* opacity: {{ '1' if not is_state('time.pa_daikin_off_timer', 'unknown') else '0.4' }}; */
+                }
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: template
+                icon: mdi:timer-off
+                icon_color: amber
+                content: Cancel On
+                tap_action:
+                  action: call-service
+                  service: script.atp_clear_on_timer
+              - type: template
+                icon: mdi:timer-off
+                icon_color: red
+                content: Clear Off
+                tap_action:
+                  action: call-service
+                  service: script.atp_clear_off_timer
+            card_mod:
+              style: |
+                ha-card {
+                  border: 1px solid var(--ha-card-border-color, #888) !important;
+                  border-radius: var(--ha-card-border-radius, 12px) !important;
+                  background: var(--card-background-color, white) !important;
+                  box-shadow: var(--ha-card-box-shadow, none) !important;
+                  padding: 8px 0;
+                  width: 100%;
+                  max-width: 100%;
+                }
+                mushroom-chips-card {
+                  width: 100%;
+                }
+                .chip-container {
+                  display: flex !important;
+                  justify-content: center !important;
+                }

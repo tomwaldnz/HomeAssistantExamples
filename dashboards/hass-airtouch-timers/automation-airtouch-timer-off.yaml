@@ -1,0 +1,36 @@
+alias: ATP Airtouch Timers  Off From Delay
+description: Turn the Airtouch off after a configurable delay from a slider
+triggers:
+  - trigger: state
+    entity_id:
+      - input_number.ducted_ac_airtouch_off_timer
+conditions: []
+actions:
+  - alias: Set the off time for the Airtouch
+    action: airtouch.set_timer_from_delay
+    data:
+      delay:
+        minutes: "{{ states('input_number.ducted_ac_airtouch_off_timer') | float }}"
+    target:
+      entity_id: time.pa_daikin_off_timer
+  - alias: Update the text field with the off time
+    action: input_text.set_value
+    target:
+      entity_id:
+        - input_text.pa_daikin_airtouch_off_delay
+    data:
+      value: >
+        {% set minutes = states('input_number.ducted_ac_airtouch_off_timer') |
+        int %} {% if minutes == 0 %}
+          {{ '' }}
+        {% else %}
+          {{ (now() + timedelta(minutes=minutes)).strftime('%H:%M') }}
+        {% endif %}
+  - action: script.notify_tim
+    metadata: {}
+    data:
+      message: >-
+        Airtouch Off Timer Set {{
+        states('input_number.ducted_ac_airtouch_off_timer') | int }}
+    enabled: false
+mode: single

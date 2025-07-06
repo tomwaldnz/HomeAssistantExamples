@@ -1,0 +1,12 @@
+alias: ATP Airtouch Timers Set Off Time to Absolute
+description: Set the Airtouch off timer to the value entered in the time setter
+triggers:
+  - entity_id: input_datetime.pa_daikin_airtouch_off_time
+    trigger: state
+actions:
+  - action: time.set_value
+    data:
+      time: "{{ states('input_datetime.pa_daikin_airtouch_off_time') }}"
+    target:
+      entity_id: time.pa_daikin_off_timer
+mode: single

@@ -1,0 +1,36 @@
+alias: ATP Airtouch Timers Clear On Timer
+description: Clear the on timer, reset the on slider
+sequence:
+  - alias: Set the datetime UI input to midday, as theres no way to reset it
+    action: input_datetime.set_datetime
+    metadata: {}
+    data:
+      time: "12:00:00"
+    target:
+      entity_id: input_datetime.pa_daikin_airtouch_on_time
+  - alias: Delay is necessary due to the asynchronous nature of these calls
+    delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  - alias: Set the off slider to 0
+    action: input_number.set_value
+    metadata: {}
+    data:
+      value: 0
+    target:
+      entity_id: input_number.ducted_ac_airtouch_on_timer
+  - alias: Delay is necessary due to the asynchronous nature of these calls
+    delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  - alias: Clear the Airtouch off timer
+    action: airtouch.clear_timer
+    metadata: {}
+    data: {}
+    target:
+      entity_id: time.pa_daikin_on_timer
+

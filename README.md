@@ -10,6 +10,9 @@ The "airtouch4-deprecated" folder contains automations based on older integratio
 ## Room / Area Controls
 A useful feature I developed is what I call "Room Controls". This lets me simply enable or disable automations for a room or resource using simple toggles. Each automation checks the toggle state as a condition.
 
+## Dashboards
+I've included my main Airtouch dashboards. One is the one I use every day when I want to turn it on, off, change temperatures, etc, beyond what the automations do. The other is to control the Airtouch built in on / off timers, which is new and I use rarely.
+
 ## Important Recommendation
 It's strongly recommended you read all the README files in each folder that you use resources from. If you don't do that you'll probably have significant problems.
 
