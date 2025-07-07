@@ -1,0 +1,16 @@
+alias: ATP Airtouch Console On Time Reset
+description: >-
+  When the automatic on time is reset / removed on the Airtouch console clear
+  the timer in HA
+triggers:
+  - trigger: state
+    entity_id:
+      - time.pa_daikin_on_timer
+    to: unknown
+    from: null
+conditions: []
+actions:
+  - action: script.atp_clear_on_timer
+    metadata: {}
+    data: {}
+mode: single
